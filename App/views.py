@@ -23,7 +23,15 @@ class LoginView(APIView):
 
         if user:
             refresh = RefreshToken.for_user(user)
-            return Response({'token': str(refresh.access_token)}, status=200)
+            response = Response({'message': 'Login realizado'}, status=200)
+            response.set_cookie(
+                key='access_token',
+                value=str(refresh.access_token),
+                httponly=True,
+                secure=True,
+                samesite='Lax'
+            )
+            return response
         else:
             return Response({'error': 'Credenciais inválidas'}, status=401)
 
